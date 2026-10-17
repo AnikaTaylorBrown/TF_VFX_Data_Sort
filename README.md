@@ -1,4 +1,7 @@
 # TF_VFX_Data_Sort
+
+In progress...
+
 Expanded data sorting tool for VFX On-Set Pipelines, generating show specific deliverable
 
 running dump.py generates base folder structure for card dumps prior to presort
