@@ -1,13 +1,6 @@
 import os
 import shutil 
 
-#NOTES TO SELF
-
-#DOC NOTES
-
-#need to double check exactly how setref / hdri / witcam is structured in final slates folder
-#need to create raw / jpg file split for setref / hdri
-
 
 #DOC NOTES
 #please utilize this script with the folder structure created in dump.py
@@ -93,7 +86,7 @@ setref_path = "unsorted/setref"
 
 setref_obj = os.scandir(setref_path)
 
-#PUT CHECK HERE TO SEE IF THERE IS ANYTHING IN FOLDER
+
 
 for entry in setref_obj:
 
@@ -119,7 +112,7 @@ hdri_path = "unsorted/hdri"
 
 hdri_obj = os.scandir(hdri_path)
 
-#PUT CHECK HERE TO SEE IF THERE IS ANYTHING IN FOLDER
+
 
 for entry in hdri_obj:
 
