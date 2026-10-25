@@ -1,10 +1,17 @@
 import os
 import shutil 
 
+#NOTES TO SELF
+
+#DOC NOTES
+
+#need to double check exactly how setref / hdri / witcam is structured in final slates folder
+#need to create raw / jpg file split for setref / hdri
+
 
 #DOC NOTES
 #please utilize this script with the folder structure created in dump.py
-#make sure not to use unusual naming conventions such as including a "." in folder / file names
+#make sure not to use unusual naming conventions such as including a "." in folder names
 
 #global variables
 slates_list = []
@@ -49,7 +56,7 @@ def get_slate(folder):
 	return slate
 
 def add_slate(slate):
-	os.makedirs("slates/"+ slate)
+	os.makedirs("sorted/slates/"+ slate)
 	slates_list.append(slate)
 
 def add_slate_check(slate, list_slates):
@@ -76,8 +83,19 @@ def add_witcam_slate(slate,list_slates, camera, path):
 	list_slates.append(slate)
 	os.mkdir(path + "/" + slate + "_witness_" + camera)
 
+def add_subfolder_check(type_sort):
+	if os.path.exists("sorted/slates/" + slate + "/" + type_sort):
+		return
+	else:
+		os.makedirs("sorted/slates/" + slate + "/" + type_sort)
+
 #create parent slate folder
-os.makedirs("slates")
+os.makedirs("sorted/slates")
+
+#sort datasheets
+
+
+
 
 
 #sort setref
@@ -86,7 +104,7 @@ setref_path = "unsorted/setref"
 
 setref_obj = os.scandir(setref_path)
 
-
+#PUT CHECK HERE TO SEE IF THERE IS ANYTHING IN FOLDER
 
 for entry in setref_obj:
 
@@ -102,7 +120,9 @@ for entry in setref_obj:
 
 			add_slate_check(slate, slates_list)
 
-			shutil.move(setref_path + "/" + folder, "slates/" + slate)
+			add_subfolder_check("setref")
+
+			shutil.move(setref_path + "/" + folder, "sorted/slates/" + slate + "/setref" )
 
 
 
@@ -112,7 +132,7 @@ hdri_path = "unsorted/hdri"
 
 hdri_obj = os.scandir(hdri_path)
 
-
+#PUT CHECK HERE TO SEE IF THERE IS ANYTHING IN FOLDER
 
 for entry in hdri_obj:
 
@@ -128,8 +148,9 @@ for entry in hdri_obj:
 
 			add_slate_check(slate, slates_list)
 
+			add_subfolder_check("hdri")
 
-			shutil.move(hdri_path + "/" + folder, "slates/" + slate)
+			shutil.move(hdri_path + "/" + folder, "sorted/slates/" + slate + "/hdri")
 
 
 
@@ -145,52 +166,59 @@ witcam_cam_obj = os.scandir(witcam_path)
 
 for entry in witcam_cam_obj:
 
-	camera = entry.name
+	if not DS_store(entry.name):
+		camera = entry.name
 
-	witcam_slates_list = []
+		witcam_slates_list = []
 
-	witcam_file_obj = os.scandir(witcam_path + "/" + camera)
+		witcam_file_obj = os.scandir(witcam_path + "/" + camera)
 
-	path = witcam_path + "/" + camera
+		path = witcam_path + "/" + camera
 
-	for entry in witcam_file_obj:
+		for entry in witcam_file_obj:
 
-		file = entry.name
+			file = entry.name
 
-		slate = ""
+			slate = ""
 
-		if not DS_store(file):
+			if not DS_store(file):
 
-			slate = get_slate(file)
+				slate = get_slate(file)
 
-			add_slate_check(slate, slates_list)
+				add_slate_check(slate, slates_list)
 
-			#checks for duplicates, creates and adds witcam to folders
-			add_witcam_slate_check(slate, witcam_slates_list, camera, path)
+				#checks for duplicates, creates and adds witcam to folders
+				add_witcam_slate_check(slate, witcam_slates_list, camera, path)
 
-			shutil.move(path + "/" + file, path + "/" + slate + "_witness_" + camera)
+				add_subfolder_check("witness")
+				add_subfolder_check("witness/" + camera)
 
+				new_folder_name = slate + "_witness_" + camera
 
+				shutil.move(path + "/" + file, path + "/" + new_folder_name)
 
+#sort witcam into slates
 
+witcam_cam_obj_2 = os.scandir(witcam_path)
 
+for entry in witcam_cam_obj_2:
 
+	if not DS_store(entry.name):
 
+		camera = entry.name
 
+		witcam_folder_obj = os.scandir(witcam_path + "/" + camera)
 
+		path = witcam_path + "/" + camera
 
+		for entry in witcam_folder_obj:
 
+			folder = entry.name
 
+			slate = get_slate(folder)
 
+			if not DS_store(folder):
 
-
-
-
-
-
-
-
-
-
+				shutil.move(path + "/" + folder, "sorted/slates/" + slate + "/witness/" + camera)
 
 
