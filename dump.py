@@ -13,7 +13,7 @@ def make_folders():
 	os.makedirs("unsorted")
 
 	#makes data folders
-	os.makedirs("unsorted/datasheets")
+	os.makedirs("unsorted/slates")
 	os.makedirs("unsorted/hdri")
 	os.makedirs("unsorted/lidar")
 	os.makedirs("unsorted/reference")
