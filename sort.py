@@ -3,9 +3,6 @@ import shutil
 
 #NOTES TO SELF
 
-#DOC NOTES
-
-#need to double check exactly how setref / hdri / witcam is structured in final slates folder
 #need to create raw / jpg file split for setref / hdri
 
 
