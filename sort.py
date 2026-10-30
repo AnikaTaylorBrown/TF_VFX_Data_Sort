@@ -3,6 +3,9 @@ import shutil
 
 #NOTES TO SELF
 
+#DOC NOTES
+
+#need to double check exactly how setref / hdri / witcam is structured in final slates folder
 #need to create raw / jpg file split for setref / hdri
 
 
@@ -34,11 +37,14 @@ def slate_exists(currentSlate, list_slates):
 
 #checks if file is .DS store
 def DS_store(folder):
-	for x in folder:
-		if x == ".":
-			return True
-		else:
-			return False
+
+	if folder == ".DS_Store":
+		return True
+	else:
+		return False
+	
+	
+
 
 #gets slate from folder name
 def get_slate(folder):
@@ -86,14 +92,51 @@ def add_subfolder_check(type_sort):
 	else:
 		os.makedirs("sorted/slates/" + slate + "/" + type_sort)
 
+
+def sort_file_type(path):
+	file_list = os.listdir(path)
+
+	os.makedirs(path + "/jpg")
+	os.makedirs(path + "/raw")
+
+	for file in file_list:
+		if not DS_store(file):
+
+			fileName, fileExt = os.path.splitext(file)
+	
+			if fileExt == ".jpg" or fileExt == ".jpeg" or fileExt == ".JPG" or fileExt == ".JPEG" :
+				shutil.move(path + "/" + file , path + "/jpg")
+			
+			else:
+				shutil.move(path + "/" + file , path + "/raw")
+	
+
+
+
+
+
 #create parent slate folder
 os.makedirs("sorted/slates")
 
 #sort datasheets
 
+datasheet_path = "unsorted/slates"
+
+datasheet_obj = os.scandir(datasheet_path)
+
+for entry in datasheet_obj:
+
+	if not DS_store(entry.name):
+		slate = entry.name
+
+		add_slate_check(slate, slates_list)
+
+		add_subfolder_check("wrangler_sheets")
 
 
+		shutil.move(datasheet_path + "/" + slate, "sorted/slates/" + slate + "/wrangler_sheets" )
 
+print("Datasheets sorted")	
 
 #sort setref
 
@@ -104,24 +147,24 @@ setref_obj = os.scandir(setref_path)
 #PUT CHECK HERE TO SEE IF THERE IS ANYTHING IN FOLDER
 
 for entry in setref_obj:
-
+	if not DS_store(entry.name):
 		folder = entry.name
 
 		#find slate token
 		slate = ""
 
-		#check if .DS Store File
-		if not DS_store(folder):
-	
-			slate = get_slate(folder)
+		
+		slate = get_slate(folder)
 
-			add_slate_check(slate, slates_list)
+		add_slate_check(slate, slates_list)
 
-			add_subfolder_check("setref")
+		add_subfolder_check("setref")
 
-			shutil.move(setref_path + "/" + folder, "sorted/slates/" + slate + "/setref" )
+		sort_file_type(setref_path + "/" + folder)
 
+		shutil.move(setref_path + "/" + folder, "sorted/slates/" + slate + "/setref" )
 
+print("setref sorted")
 
 #sort hdri
 
@@ -133,23 +176,25 @@ hdri_obj = os.scandir(hdri_path)
 
 for entry in hdri_obj:
 
+
+
+	if not DS_store(entry.name):
 		folder = entry.name
 
 		#find slate token
 		slate = ""
-
-		#check if .DS Store File
-		if not DS_store(folder):
 	
-			slate = get_slate(folder)
+		slate = get_slate(folder)
 
-			add_slate_check(slate, slates_list)
+		add_slate_check(slate, slates_list)
 
-			add_subfolder_check("hdri")
+		add_subfolder_check("hdri")
 
-			shutil.move(hdri_path + "/" + folder, "sorted/slates/" + slate + "/hdri")
+		sort_file_type(hdri_path + "/" + folder)
 
+		shutil.move(hdri_path + "/" + folder, "sorted/slates/" + slate + "/hdri")
 
+print("hdri sorted")
 
 # needs to sort into slates folder 
 #need to put individual files into folders in structure SLATE_witness_cam
@@ -217,5 +262,6 @@ for entry in witcam_cam_obj_2:
 			if not DS_store(folder):
 
 				shutil.move(path + "/" + folder, "sorted/slates/" + slate + "/witness/" + camera)
+
 
 
